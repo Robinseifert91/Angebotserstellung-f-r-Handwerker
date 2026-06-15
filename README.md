@@ -8,6 +8,8 @@ Eine Web-App für kleine deutsche Handwerksbetriebe: Handwerker fotografiert die
 |:-----------:|:----------:|:-----------------:|
 | ![Foto-Upload](docs/screenshots/01-foto-upload.jpg) | ![KI-Analyse](docs/screenshots/02-ki-analyse.jpg) | ![Angebot bearbeiten](docs/screenshots/03-angebot-bearbeiten.jpg) |
 
+**Beispiel-PDF:** [Angebot-2026-003.pdf](docs/examples/Angebot-2026-003.pdf)
+
 ---
 
 ## Tech Stack
