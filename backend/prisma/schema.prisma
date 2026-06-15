@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gewerk {
+  MALER
+  FLIESENLEGER
+  ELEKTRIKER
+  SHK
+  SONSTIGES
+}
+
+enum AuftragStatus {
+  ENTWURF
+  ANGEBOT_ERSTELLT
+  GESENDET
+  ABGESCHLOSSEN
+}
+
+enum AngebotStatus {
+  ENTWURF
+  FERTIG
+  EXPORTIERT
+}
+
+enum Einheit {
+  M2
+  M
+  STK
+  STD
+  PAUSCHAL
+}
+
+model Betrieb {
+  id           String   @id @default(cuid())
+  firmenname   String
+  inhaber      String
+  strasse      String
+  plz          String
+  stadt        String
+  steuernummer String
+  telefon      String?
+  email        String?
+  logo         String?
+  stundensatz  Float    @default(65.0)
+  gewerk       Gewerk   @default(SONSTIGES)
+  createdAt    DateTime @default(now())
+
+  auftraege Auftrag[]
+}
+
+model Auftrag {
+  id            String        @id @default(cuid())
+  betriebId     String
+  name          String
+  kundenname    String?
+  objektAdresse String?
+  beschreibung  String?
+  status        AuftragStatus @default(ENTWURF)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  betrieb Betrieb  @relation(fields: [betriebId], references: [id])
+  fotos   Foto[]
+  angebot Angebot?
+}
+
+model Foto {
+  id              String   @id @default(cuid())
+  auftragId       String
+  dateipfad       String
+  analyseErgebnis Json?
+  createdAt       DateTime @default(now())
+
+  auftrag Auftrag @relation(fields: [auftragId], references: [id], onDelete: Cascade)
+}
+
+model Angebot {
+  id                  String        @id @default(cuid())
+  auftragId           String        @unique
+  angebotsnummer      String        @unique
+  datum               DateTime      @default(now())
+  gueltigBis          DateTime
+  gesamtNetto         Float         @default(0)
+  mwstBetrag          Float         @default(0)
+  gesamtBrutto        Float         @default(0)
+  zahlungsbedingungen String        @default("Zahlbar innerhalb von 14 Tagen ohne Abzug.")
+  status              AngebotStatus @default(ENTWURF)
+  pdfPfad             String?
+
+  auftrag    Auftrag            @relation(fields: [auftragId], references: [id])
+  positionen Angebotsposition[]
+}
+
+model Angebotsposition {
+  id               String  @id @default(cuid())
+  angebotId        String
+  reihenfolge      Int
+  bezeichnung      String
+  menge            Float
+  einheit          Einheit
+  einzelpreisNetto Float
+  gesamtpreisNetto Float
+
+  angebot Angebot @relation(fields: [angebotId], references: [id], onDelete: Cascade)
+
+  @@index([angebotId, reihenfolge])
+}

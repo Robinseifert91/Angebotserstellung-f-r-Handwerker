@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+out/
+
+# Environment (niemals committen — .env.example stattdessen)
+.env
+.env.local
+.env.*.local
+
+# Hochgeladene Dateien (Handwerker-Fotos, generierte PDFs)
+uploads/
+generated-pdfs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
